@@ -1,0 +1,48 @@
+generate_pr_description_task:
+  description: >
+    You will analyze the following code patch diff, which is provided below inside the triple backticks.
+    Your analysis must be thorough. Identify every significant change, including new features, bug fixes,
+    refactoring, dependency updates, and deletions. Based on this analysis, you must generate a complete
+    and accurate pull request description in markdown format.
+
+    Here is the diff content to analyze:
+    ```diff
+    {diff_content}
+    ```
+
+    You MUST strictly follow this template for your final output. Do not add any text or explanation
+    outside of the markdown template structure.
+
+    **Template:**
+    ```markdown
+      ## Context
+      **JIRA Issue**: [Link to JIRA issue or "N/A"]
+
+      ## Description
+      This PR ...
+
+      **This PR includes**:
+
+      - [A summary of the first significant change]
+      - [A summary of the second significant change]
+      - ...
+
+
+      ## Technical notes
+      [Notes for the reviewer about implementation details, new libraries, or architectural changes. If none, state "None."]
+
+      ## User-facing changes
+      [Yes/No. If Yes, provide a brief explanation of what the user will see or experience differently.]
+
+      ## Tests
+      [Describe the tests that have been added or updated to cover these changes. If no tests were added, describe the manual testing that was performed or is required.]
+    ```
+
+  expected_output: >
+    A single, complete, and well-formatted markdown text block that serves as the pull request description.
+    The output must contain all the required sections from the template, populated with accurate
+    information derived solely from the provided diff content.
+  
+  agent: pr_description_agent
+  markdown: true
+  output_file: pr_description.md
