@@ -23,39 +23,33 @@ def create_patch(repo_path, feature_branch, base_branch=None):
         ValueError: If the specified branches cannot be found.
         Exception: For any other unexpected errors.
     """
-    try:
-        repo = git.Repo(repo_path)
-        log.info(f"Successfully opened repository: {repo_path}")
+    repo = git.Repo(repo_path)
+    log.info(f"Successfully opened repository: {repo_path}")
 
-        if base_branch is None:
-            try:
-                remote_head = repo.remote().refs.HEAD
-                base_branch = remote_head.ref.name.split("/")[-1]
-            except (ValueError, IndexError):
-                if "main" in repo.branches:
-                    base_branch = "main"
-                elif "master" in repo.branches:
-                    base_branch = "master"
-                else:
-                    raise ValueError(
-                        "Could not determine the default branch. Please specify a base_branch."
-                    )
+    if base_branch is None:
+        try:
+            remote_head = repo.remote().refs.HEAD
+            base_branch = remote_head.ref.name.split("/")[-1]
+        except (ValueError, IndexError):
+            if "main" in repo.branches:
+                base_branch = "main"
+            elif "master" in repo.branches:
+                base_branch = "master"
+            else:
+                raise ValueError(
+                    "Could not determine the default branch. Please specify a base_branch."
+                )
 
-        if feature_branch not in repo.branches:
-            raise ValueError(f"Error: Feature branch '{feature_branch}' not found.")
-        if base_branch not in repo.branches:
-            raise ValueError(f"Error: Base branch '{base_branch}' not found.")
+    if feature_branch not in repo.branches:
+        raise ValueError(f"Error: Feature branch '{feature_branch}' not found.")
+    if base_branch not in repo.branches:
+        raise ValueError(f"Error: Base branch '{base_branch}' not found.")
 
-        log.info(
-            f"Comparing feature branch '{feature_branch}' against base '{base_branch}'"
-        )
+    log.info(
+        f"Comparing feature branch '{feature_branch}' against base '{base_branch}'"
+    )
 
-        patch_content = repo.git.diff(f"{base_branch}..{feature_branch}")
+    patch_content = repo.git.diff(f"{base_branch}..{feature_branch}")
 
-        log.info("Successfully generated patch content.")
-        return patch_content
-
-    except (git.exc.NoSuchPathError, git.exc.InvalidGitRepositoryError, ValueError):
-        raise
-    except Exception as e:
-        raise Exception(f"An unexpected error occurred: {e}")
+    log.info("Successfully generated patch content.")
+    return patch_content
